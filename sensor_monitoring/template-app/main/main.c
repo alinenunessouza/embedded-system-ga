@@ -2,11 +2,15 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include <ultrasonic.h>
 
 SemaphoreHandle_t bmp_mutex = NULL;
 SemaphoreHandle_t ultrassom_mutex = NULL;
 
 #define DELAY 1000 //ms
+
+#define GPIO_TRIGGER 15
+#define GPIO_ECHO 2
 
 /*
 * Leitura BMP280
@@ -49,6 +53,16 @@ float leitura_ultrassom() {
     // Inserir leitura
     float sensor = 3;
     return sensor;
+}
+
+void ultrasonic(void *pvParamters)
+{
+	ultrasonic_sensor_t sensor = {
+		.trigger_pin = GPIO_TRIGGER,
+		.echo_pin = GPIO_ECHO
+	};
+
+	ultrasonic_init(&sensor);
 }
 
 void ultrassom_task(void * parametros) {
