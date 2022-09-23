@@ -9,6 +9,8 @@ SemaphoreHandle_t ultrassom_mutex = NULL;
 
 #define DELAY 1000 //ms
 
+#define MAX_DISTANCE_CM 500 // 5m max
+
 #define GPIO_TRIGGER 15
 #define GPIO_ECHO 2
 
@@ -51,18 +53,39 @@ float valor_ultrassom = 84;
 
 float leitura_ultrassom() {
     // Inserir leitura
-    float sensor = 3;
-    return sensor;
-}
+    uint32_t distance = 0;
 
-void ultrasonic(void *pvParamters)
-{
 	ultrasonic_sensor_t sensor = {
 		.trigger_pin = GPIO_TRIGGER,
 		.echo_pin = GPIO_ECHO
 	};
 
+    /*
 	ultrasonic_init(&sensor);
+    
+    while (true) {
+		esp_err_t res = ultrasonic_measure_cm(&sensor, MAX_DISTANCE_CM, &distance);
+		if (res != ESP_OK) {
+			printf("Error: ");
+			switch (res) {
+				case ESP_ERR_ULTRASONIC_PING:
+					printf("Cannot ping (device is in invalid state)\n");
+					break;
+				case ESP_ERR_ULTRASONIC_PING_TIMEOUT:
+					printf("Ping timeout (no device found)\n");
+					break;
+				case ESP_ERR_ULTRASONIC_ECHO_TIMEOUT:
+					printf("Echo timeout (i.e. distance too big)\n");
+					break;
+				default:
+					printf("%d\n", res);
+			}
+		}
+        
+		vTaskDelay(500 / portTICK_PERIOD_MS);
+	}*/
+
+    return *((float*)&distance);
 }
 
 void ultrassom_task(void * parametros) {
