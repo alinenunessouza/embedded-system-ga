@@ -2,5 +2,11 @@
   "C_Cpp.intelliSenseEngine": "Tag Parser",
   "idf.flashType": "UART",
   "idf.portWin": "COM3",
-  "idf.adapterTargetName": "esp32"
+  "idf.adapterTargetName": "esp32",
+  "files.associations": {
+    "thread": "c",
+    "string.h": "c",
+    "i2cdev.h": "c",
+    "bmp280.h": "c"
+  }
 }

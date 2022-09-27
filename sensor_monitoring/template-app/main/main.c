@@ -2,6 +2,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include "bmp280.h"
+#include "i2cdev.h"
+#include <string.h>
 
 SemaphoreHandle_t bmp_mutex = NULL;
 SemaphoreHandle_t ultrassom_mutex = NULL;
@@ -12,6 +15,9 @@ SemaphoreHandle_t ultrassom_mutex = NULL;
 * Leitura BMP280
 */
 
+#define CONFIG_EXAMPLE_I2C_MASTER_SCL 19
+#define CONFIG_EXAMPLE_I2C_MASTER_SDA 18
+
 struct bmp280 {
     float tmp;
     float press;
@@ -19,16 +25,26 @@ struct bmp280 {
 
 struct bmp280 valor_bmp280;
 
+bmp280_t dev;
+
 struct bmp280 leitura_bmp280() {
     struct bmp280 sensor;
-    // Inserir leitura
-    sensor.tmp = 1;
-    sensor.press = 2;
+    bmp280_read_float(&dev, &sensor.tmp, &sensor.press, NULL);
     return sensor;
 }
 
 void bmp280_task(void * parametros) {
+    ESP_ERROR_CHECK(i2cdev_init());
+
     struct bmp280 leitura;
+
+    bmp280_params_t params;
+    bmp280_init_default_params(&params);
+    memset(&dev, 0, sizeof(bmp280_t));
+
+    ESP_ERROR_CHECK(bmp280_init_desc(&dev, BMP280_I2C_ADDRESS_0, 0, CONFIG_EXAMPLE_I2C_MASTER_SDA, CONFIG_EXAMPLE_I2C_MASTER_SCL));
+    ESP_ERROR_CHECK(bmp280_init(&dev, &params));
+
     while(1) {
         leitura = leitura_bmp280();
         while (xSemaphoreTake(bmp_mutex, 10)) {
@@ -83,8 +99,8 @@ void comunicacao_task(void * parametros) {
         xSemaphoreGive(ultrassom_mutex);
     
         printf("Enviando leituras...\n");
-        printf("Temperatura: %f\n", bmp280_lido.tmp);
-        printf("Pressao: %f\n", bmp280_lido.press);
+        printf("Temperatura: %.2f C\n", bmp280_lido.tmp);
+        printf("Pressao: %.2f Pa\n", bmp280_lido.press);
         printf("Distancia: %f\n", ultrassom_lido);
         printf("Finalizado envio!\n");
         vTaskDelay(DELAY / portTICK_PERIOD_MS);
