@@ -21,8 +21,8 @@ SemaphoreHandle_t ultrassom_mutex = NULL;
 * Leitura BMP280
 */
 
-#define CONFIG_EXAMPLE_I2C_MASTER_SCL 19
-#define CONFIG_EXAMPLE_I2C_MASTER_SDA 18
+#define CONFIG_EXAMPLE_I2C_MASTER_SCL 22
+#define CONFIG_EXAMPLE_I2C_MASTER_SDA 21
 
 struct bmp280 {
     float tmp;
