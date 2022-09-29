@@ -107,7 +107,7 @@ void ultrassom_task(void * parametros) {
     uint32_t leitura;
     while(1) {
         leitura = leitura_ultrassom();
-        while (xSemaphoreTake(ultrassom_mutex, 10)) {
+        if (xSemaphoreTake(ultrassom_mutex, 10)) {
             valor_ultrassom = leitura;
             xSemaphoreGive(ultrassom_mutex);
         }
