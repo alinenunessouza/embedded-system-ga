@@ -53,7 +53,7 @@ void bmp280_task(void * parametros) {
 
     while(1) {
         leitura = leitura_bmp280();
-        while (xSemaphoreTake(bmp_mutex, 10)) {
+        if (xSemaphoreTake(bmp_mutex, 10)) {
             valor_bmp280 = leitura;
             xSemaphoreGive(bmp_mutex);
         }
