@@ -12,10 +12,10 @@ SemaphoreHandle_t ultrassom_mutex = NULL;
 
 #define DELAY 1000 //ms
 
-#define MAX_DISTANCE_CM 500 // 5m max
+#define MAX_DISTANCE_CM 100 // 1m max
 
-#define GPIO_TRIGGER 15
-#define GPIO_ECHO 2
+#define GPIO_TRIGGER 17 //GPIO1 TXD
+#define GPIO_ECHO 16 //GPIO16 RXD
 
 /*
 * Leitura BMP280
@@ -65,7 +65,7 @@ void bmp280_task(void * parametros) {
 * Leitura ultrassom
 */
 
-float valor_ultrassom = 84;
+float valor_ultrassom = 0;
 
 float leitura_ultrassom() {
     // Inserir leitura
@@ -151,6 +151,6 @@ void app_main(void)
     xSemaphoreGive(ultrassom_mutex);
 
     xTaskCreate(bmp280_task, "BMP280", 2048, NULL, 1, NULL);
-    xTaskCreate(ultrassom_task, "UltrassomArduino", 2048, NULL, 1, NULL);
+    xTaskCreate(ultrassom_task, "UltrassomHCSR04", 2048, NULL, 1, NULL);
     xTaskCreate(comunicacao_task, "Comunicacao", 2048, NULL, 1, NULL);
 }
