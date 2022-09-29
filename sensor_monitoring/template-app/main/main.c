@@ -55,8 +55,8 @@ void bmp280_task(void * parametros) {
         leitura = leitura_bmp280();
         while (xSemaphoreTake(bmp_mutex, 10)) {
             valor_bmp280 = leitura;
+            xSemaphoreGive(bmp_mutex);
         }
-        xSemaphoreGive(bmp_mutex);
         vTaskDelay(DELAY / portTICK_PERIOD_MS);
     }
 }
@@ -110,8 +110,8 @@ void ultrassom_task(void * parametros) {
         leitura = leitura_ultrassom();
         while (xSemaphoreTake(ultrassom_mutex, 10)) {
             valor_ultrassom = leitura;
+            xSemaphoreGive(ultrassom_mutex);
         }
-        xSemaphoreGive(ultrassom_mutex);
         vTaskDelay(DELAY / portTICK_PERIOD_MS);
     }
 }
@@ -128,12 +128,12 @@ void comunicacao_task(void * parametros) {
     while(1) {
         if (xSemaphoreTake(bmp_mutex, 10)) {
             bmp280_lido = valor_bmp280;
+            xSemaphoreGive(bmp_mutex);
         }
-        xSemaphoreGive(bmp_mutex);
         if (xSemaphoreTake(ultrassom_mutex, 10)) {
             ultrassom_lido = valor_ultrassom;
+            xSemaphoreGive(ultrassom_mutex);
         }
-        xSemaphoreGive(ultrassom_mutex);
     
         printf("Enviando leituras...\n");
         printf("Temperatura: %.2f C\n", bmp280_lido.tmp);
