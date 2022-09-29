@@ -76,7 +76,6 @@ float leitura_ultrassom() {
 		.echo_pin = GPIO_ECHO
 	};
 
-    /*
 	ultrasonic_init(&sensor);
     
     while (true) {
@@ -99,7 +98,7 @@ float leitura_ultrassom() {
 		}
         
 		vTaskDelay(500 / portTICK_PERIOD_MS);
-	}*/
+	}
 
     return *((float*)&distance);
 }
