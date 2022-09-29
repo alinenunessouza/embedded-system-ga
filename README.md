@@ -9,5 +9,9 @@ Sensor 1: HC-SR04 Ultrasonic Sensor
 
 *Image by: https://create.arduino.cc/projecthub/abdularbi17/ultrasonic-sensor-hc-sr04-with-arduino-tutorial-327ff6*
 
+Sensor 2:
+![image](./BMP280.png)
 
-Sensor 2: 
+Complete Schematic:
+
+![image](./schematic.png)
