@@ -65,9 +65,9 @@ void bmp280_task(void * parametros) {
 * Leitura ultrassom
 */
 
-float valor_ultrassom = 0;
+uint32_t valor_ultrassom = 0;
 
-float leitura_ultrassom() {
+uint32_t leitura_ultrassom() {
     // Inserir leitura
     uint32_t distance = 0;
 
@@ -78,7 +78,6 @@ float leitura_ultrassom() {
 
 	ultrasonic_init(&sensor);
     
-    while (true) {
 		esp_err_t res = ultrasonic_measure_cm(&sensor, MAX_DISTANCE_CM, &distance);
 		if (res != ESP_OK) {
 			printf("Error: ");
@@ -96,15 +95,16 @@ float leitura_ultrassom() {
 					printf("%d\n", res);
 			}
 		}
+        else
+            printf("Distancia: %d cm\n", distance);
         
 		vTaskDelay(500 / portTICK_PERIOD_MS);
-	}
-
-    return *((float*)&distance);
+	
+    return distance;
 }
 
 void ultrassom_task(void * parametros) {
-    float leitura;
+    uint32_t leitura;
     while(1) {
         leitura = leitura_ultrassom();
         while (xSemaphoreTake(ultrassom_mutex, 10)) {
@@ -123,7 +123,7 @@ void comunicacao_task(void * parametros) {
     struct bmp280 bmp280_lido;
     bmp280_lido.tmp = 0;
     bmp280_lido.press = 0;
-    float ultrassom_lido = 0;
+    uint32_t ultrassom_lido = 0;
     while(1) {
         if (xSemaphoreTake(bmp_mutex, 10)) {
             bmp280_lido = valor_bmp280;
@@ -137,7 +137,7 @@ void comunicacao_task(void * parametros) {
         printf("Enviando leituras...\n");
         printf("Temperatura: %.2f C\n", bmp280_lido.tmp);
         printf("Pressao: %.2f Pa\n", bmp280_lido.press);
-        printf("Distancia: %f\n", ultrassom_lido);
+        printf("Distancia: %d cm\n", ultrassom_lido);
         printf("Finalizado envio!\n");
         vTaskDelay(DELAY / portTICK_PERIOD_MS);
     }
